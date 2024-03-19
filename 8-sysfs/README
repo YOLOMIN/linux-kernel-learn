@@ -1,0 +1,16 @@
+Sysfs 是 Linux 内核提供的一种虚拟文件系统，用于向用户空间公开内核中设备和驱动程序的信息。它通常被挂载在 `/sys` 目录下。
+
+Sysfs 的主要目的是提供一个统一的接口，让用户空间程序可以方便地获取和配置系统中的设备和驱动程序信息，而无需直接访问硬件或者通过其他复杂的内核接口。
+
+通过 sysfs，用户空间程序可以以文件的形式访问设备和驱动程序的信息，例如设备的属性、状态、驱动程序信息等。这些信息以文件和目录的形式组织在 `/sys` 目录下，用户可以通过标准的文件操作接口（比如 `open`、`read`、`write`、`close` 等）来访问这些信息。
+
+Sysfs 在 Linux 中被广泛用于管理设备、调试和监控系统状态，以及与设备进行交互。它为用户空间提供了一种简单而有效的方式来与内核中的设备和驱动程序进行通信，从而增强了系统的可管理性和可调试性。
+
+
+hello-sysfs.c:
+    sudo insmod hello-sysfs.ko
+    sudo lsmod |grep hello_sysfs
+    sudo cat /sys/kernel/mymodule/myvariable
+    sudo echo "32" > /sys/kernel/mymodule/myvariable
+    sudo cat /sys/kernel/mymodule/myvariable
+    sudo rmmod hello_sysfs
