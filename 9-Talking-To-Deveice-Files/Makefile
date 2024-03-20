@@ -1,7 +1,6 @@
 #obj-m += ioctl.o 
 
 obj-m += chardev2.o
-obj-m += userspace_ioctl.o
 
 PWD := $(CURDIR) 
 EXTRA_CFLAGS += -I$(PWD)

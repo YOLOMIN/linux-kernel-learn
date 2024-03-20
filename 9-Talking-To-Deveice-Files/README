@@ -1,0 +1,7 @@
+Makefile:
+    使用 EXTRA_CFLAGS 变量将头文件目录添加到编译器的搜索路径中.例如：
+    EXTRA_CFLAGS += -I$(PWD)
+
+userspace_ioctl.c
+    编译问题：
+        gcc -o userspace_ioctl userspace_ioctl.c
