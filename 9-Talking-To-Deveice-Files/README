@@ -5,3 +5,7 @@ Makefile:
 userspace_ioctl.c
     编译问题：
         gcc -o userspace_ioctl userspace_ioctl.c
+    调试：
+        gcc -o userspace_ioctl -g userspace_ioctl.c
+        sudo gdb ./userspace_ioctl
+        

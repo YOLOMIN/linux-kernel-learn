@@ -76,9 +76,9 @@ int main(void)
     int file_desc,ret_val;
     char *msg = "Message passed by ioctl\n";
 
-    file_desc = open(DEVICE_FILE_NAME,O_RDWR);
+    file_desc = open(DEVICE_PATH,O_RDWR);
     if(file_desc  < 0){
-        printf("Can't open device file:%s,error:%d\n",DEVICE_FILE_NAME,file_desc);
+        printf("Can't open device file:%s,error:%d\n",DEVICE_PATH,file_desc);
         exit(EXIT_FAILURE);
     }
 
@@ -88,6 +88,10 @@ int main(void)
     ret_val = ioctl_get_nth_byte(file_desc);
     if(ret_val)
         goto error;
+    ret_val = ioctl_get_msg(file_desc);
+    if(ret_val)
+        goto error;
+    
     close(file_desc);
     return 0;
 error:
