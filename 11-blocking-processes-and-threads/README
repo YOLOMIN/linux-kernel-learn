@@ -1,0 +1,11 @@
+sleep.ko:
+    sudo insmod sleep.ko
+
+cat_nonblock:
+    gcc -o ./cat_nonblock ./cat_nonblock.c
+
+测试：
+     tail -f /proc/sleep &
+     sudo ./cat_nonblock /proc/sleep
+     kill %1
+     sudo ./cat_nonblock /proc/sleep
