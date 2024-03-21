@@ -1,0 +1,42 @@
+
+Spinlock（自旋锁）是一种同步原语，用于在多处理器系统中保护共享资源，以防止并发访问导致的竞态条件。它是一种非阻塞锁，获取失败时会一直自旋等待直到锁可用。Spinlock 不会引起线程的睡眠，而是在尝试获取锁时不断循环检查锁的状态，直到成功获取为止。
+
+在 Linux 内核中，Spinlock 是最基本和常用的锁之一，常用于保护临界区代码、数据结构的修改和其他需要独占访问的操作。Spinlock 主要由 `spinlock_t` 类型的结构体表示，通常声明为一个变量并初始化。
+
+Linux 内核提供了一系列操作函数来操作 Spinlock，例如：
+
+- `spin_lock_init(spinlock_t *lock)`：初始化 Spinlock。
+- `spin_lock(spinlock_t *lock)`：获取 Spinlock，如果已被锁定则会一直自旋等待。
+- `spin_trylock(spinlock_t *lock)`：尝试获取 Spinlock，如果已被锁定则立即返回失败。
+- `spin_unlock(spinlock_t *lock)`：释放 Spinlock。
+
+使用 Spinlock 需要注意以下几点：
+
+1. **持锁时间应短**：获取 Spinlock 后应尽快释放，以避免其他 CPU 在自旋等待期间被阻塞。
+2. **避免递归获取**：同一个线程不应该在持有 Spinlock 的情况下再次尝试获取同一个 Spinlock，否则会导致死锁。
+3. **避免自旋过长**：过长的自旋会消耗 CPU 资源，影响系统的性能。
+4. **避免在中断上下文中获取**：在中断处理程序中获取 Spinlock 会引发死锁风险。
+
+Spinlock 适用于临界区代码执行时间短暂、并发访问频繁的场景，但在临界区代码执行时间较长或者竞争不激烈时，自旋等待可能会浪费 CPU 资源，因此需要根据实际情况综合考虑是否使用 Spinlock。
+
+`spin_lock_irqsave` 是 Linux 内核中用于实现自旋锁的一个函数，其目的是为了保护临界区代码，避免多个 CPU 同时访问共享资源时发生竞争条件。这个函数在获取自旋锁的同时，会禁用本地 CPU 的中断，以避免由于中断引发的并发问题。
+
+函数原型如下：
+
+```c
+unsigned long spin_lock_irqsave(spinlock_t *lock, unsigned long flags);
+```
+
+其中：
+
+- `lock` 是指向要获取的自旋锁的指针，类型为 `spinlock_t`。
+- `flags` 是一个用于保存当前 CPU 中断状态的标志，它用于在释放锁时恢复之前的中断状态。
+
+`spin_lock_irqsave` 函数的工作原理如下：
+
+1. 它首先会保存当前 CPU 的中断状态到 `flags` 变量中，然后禁用本地 CPU 的中断。
+2. 然后，它会尝试获取自旋锁。如果自旋锁已经被其他 CPU 持有，则当前 CPU 会在这里自旋等待，直到自旋锁被释放。
+3. 当获取到自旋锁后，临界区代码可以安全地执行。
+4. 在退出临界区时，使用 `spin_unlock_irqrestore` 函数来释放自旋锁，并恢复之前保存的中断状态。
+
+使用 `spin_lock_irqsave` 函数获取自旋锁是为了确保在临界区内，中断不会打断临界区的执行，从而确保临界区代码的原子性和一致性。
