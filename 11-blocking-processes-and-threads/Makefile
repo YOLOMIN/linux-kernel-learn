@@ -1,4 +1,5 @@
 obj-m += sleep.o
+obj-m += completions.o
 
 PWD := $(CURDIR) 
 

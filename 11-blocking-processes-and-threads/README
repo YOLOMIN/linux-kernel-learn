@@ -9,3 +9,28 @@ cat_nonblock:
      sudo ./cat_nonblock /proc/sleep
      kill %1
      sudo ./cat_nonblock /proc/sleep
+
+completions:
+    在 Linux 内核中，`completion` 是一种同步机制，用于线程间的通信和同步。它通常用于等待某个事件完成。`completion` 本质上是一个信号，可以在某个操作完成时被设置为“已完成”，然后等待线程可以阻塞，直到这个信号被触发。
+
+    `completion` 机制由 `struct completion` 结构表示，定义在 `<linux/completion.h>` 头文件中。它包含了一个计数器和一个等待队列。计数器的初始值为 0，当计数器被设置为非零值时，等待该 `completion` 的线程将会被唤醒。
+
+    以下是 `struct completion` 的简化定义：
+
+    ```c
+    struct completion {
+        unsigned int done;
+        wait_queue_head_t wait;
+    };
+    ```
+
+    Linux 内核中的 `completion` 提供了以下几个主要的函数：
+
+    - `init_completion(struct completion *x)`：初始化 `completion`。
+    - `complete(struct completion *x)`：设置 `completion` 为“已完成”，唤醒等待该 `completion` 的线程。
+    - `complete_all(struct completion *x)`：设置 `completion` 为“已完成”，唤醒所有等待该 `completion` 的线程。
+    - `wait_for_completion(struct completion *x)`：等待 `completion` 被设置为“已完成”。
+    - `wait_for_completion_interruptible(struct completion *x)`：可被中断的等待 `completion` 被设置为“已完成”，即可以响应中断信号退出等待。
+    - `wait_for_completion_timeout(struct completion *x, unsigned long timeout)`：设置超时等待 `completion` 被设置为“已完成”。
+
+    `completion` 机制是 Linux 内核中一种常用的同步原语，用于实现各种多线程和异步操作的同步等待。
